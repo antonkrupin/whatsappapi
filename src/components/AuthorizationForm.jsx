@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Message from "./Message";
 import './AuthorizationForm.css';
 
 const AuthorizationForm = () => {
@@ -8,14 +9,18 @@ const AuthorizationForm = () => {
 	const [isAuthorized, setIsAuthorized] = useState(false);
 	const [isChatting, setIsChatting] = useState(false);
 	const [error, setError] = useState(null);
+	const [history, setHistory] = useState([]);
 
 	const [message, setMessage] = useState('start');
 
 	const authorize = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`);
-			if (response.status === 200) {
+			const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`)
+			.then(response => response.text())
+			.then(result => JSON.parse(result));
+
+			if (response.stateInstance === "authorized") {
 				setIsAuthorized(true);
 				setError(null);
 			} else {
@@ -34,30 +39,16 @@ const AuthorizationForm = () => {
 			body: JSON.stringify({
 				"chatId": `${phone}@c.us`,
 			})
-		});
-
-		const reader = response.body.getReader();
-	
-		let result = '[]';
-		const utf8decoder = new TextDecoder();
-		while (true) {
-			const { value, done } = await reader.read();
-			console.log(utf8decoder.decode(value));
-			result += utf8decoder.decode(value);
-			if (done) break;
-		}
-		console.log(response.text());
-		console.log('result', result);
-		const test1 = JSON.stringify(result);
-		console.log('restul1', test1);
-		console.log('length', test1.length);
-		return result;
+		})
+		.then(response => response.text())
+		.then(result => JSON.parse(result).reverse());
+		setHistory(response);
 	}
 
 	const startChat = async (e) => {
 		e.preventDefault();
 		// const test = loadChatHistory();
-		
+		loadChatHistory();
 		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
 		{
 			method: 'POST',
@@ -137,11 +128,11 @@ const AuthorizationForm = () => {
 							<>
 								<div className="chat">
 									<div className="messages">
-										
+										{history.map(message => <Message type={message.type} text={message.textMessage}/>)}
 									</div>
-									<div className="inputMessage">
+									<div className="d-flex justify-content-around inputMessage">
 										<input onInput={(e) => setMessage(e.target.value)} placeholder="введите сообщение"/>
-										<button onClick={startChat}>Отправить сообщение</button>
+										<button onClick={startChat} className="btn btn-primary">Отправить</button>
 									</div>
 								</div>
 							</>

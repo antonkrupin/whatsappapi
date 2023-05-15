@@ -1,16 +1,16 @@
 form {
-	width: 25vw;
+	width: 40vw;
 	margin: 20px;
 }
 
 input {
-	margin-top: 15px;
-	margin-bottom: 15px;
+	width: 90%;
+	margin: 15px;
 }
 
 button {
 	width: 30%;
-	margin-top: 15px;
+	margin: 15px;
 }
 
 .error {
@@ -27,7 +27,9 @@ button {
 }
 
 .messages {
-	min-height: 200px;
+	max-height: 300px;
 	width: 100%;
 	background-color: white;
+	border-radius: 10px;
+	overflow-y: scroll;
 }
