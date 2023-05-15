@@ -43,6 +43,7 @@ const AuthorizationForm = () => {
 		.then(response => response.text())
 		.then(result => JSON.parse(result).reverse());
 		setHistory(response);
+		setTimeout(() => loadChatHistory(), 5000);
 	}
 
 	const startChat = async (e) => {
@@ -128,7 +129,7 @@ const AuthorizationForm = () => {
 							<>
 								<div className="chat">
 									<div className="messages">
-										{history.map(message => <Message type={message.type} text={message.textMessage}/>)}
+										{history.map(message => <Message key={message.idMessage} type={message.type} text={message.textMessage}/>)}
 									</div>
 									<div className="d-flex justify-content-around inputMessage">
 										<input onInput={(e) => setMessage(e.target.value)} placeholder="введите сообщение"/>
