@@ -1,0 +1,23 @@
+form {
+	width: 25vw;
+	margin: 20px;
+}
+
+input {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+button {
+	width: 30%;
+	margin-top: 15px;
+}
+
+.error {
+	margin-top: 25px;
+	padding: 10px;
+	background-color: #cb232f;
+	text-align: center;
+	border-radius: 10px;
+	color: white;
+}
