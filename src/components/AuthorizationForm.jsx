@@ -10,69 +10,26 @@ const AuthorizationForm = () => {
 	const [isAuthorized, setIsAuthorized] = useState(false);
 	const [isChatting, setIsChatting] = useState(false);
 	const [error, setError] = useState(null);
-	// const [history, setHistory] = useState([]);
-
-	// const [message, setMessage] = useState();
-
+	
 	const authorize = async (e) => {
 		e.preventDefault();
 		try {
 			const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`)
 			.then(response => response.text())
 			.then(result => JSON.parse(result));
-
 			if (response.stateInstance === "authorized") {
 				setIsAuthorized(true);
 				setError(null);
-			} else {
-				setIsAuthorized(false);
-				setError('Проверьте введенные данные, либо авторизуйтесь или зарегистрируйтесь в личном кабинете - green-api.com');
 			}
 		} catch (err) {
-			
+			setIsAuthorized(false);
+				setError('Проверьте введенные данные, либо авторизуйтесь или зарегистрируйтесь в личном кабинете - green-api.com');
 		}
 	};
-
-	/* const loadChatHistory = async () => {
-		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/GetChatHistory/${apiTokenInstance}`,
-		{
-			method: 'POST',
-			body: JSON.stringify({
-				"chatId": `${phone}@c.us`,
-			})
-		})
-		.then(response => response.text())
-		.then(result => JSON.parse(result).reverse());
-		setHistory(response);
-		setTimeout(() => loadChatHistory(), 5000);
-	} */
-
-	/* const getReciveNotification = async () => {
-		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`)
-		.then(response => response.text())
-		.then(result => console.log('test test test', result));
-		setTimeout(() => getReciveNotification(), 5000);
-	} */
 
 	const startChat = async (e) => {
 		e.preventDefault();
 
-		// loadChatHistory();
-		
-		/* if (message) {
-			await fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
-			{
-				method: 'POST',
-				body: JSON.stringify(
-					{
-						"chatId": `${phone}@c.us`,
-						"message": `${message}`,
-					}
-				)
-			});
-		}
-
-		getReciveNotification(); */
 		setIsChatting(true);
 	};
 

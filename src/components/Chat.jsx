@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Message from './Message';
+import {
+	fetchMessages
+} from '../slices/selectors';
+import { addMessage } from '../slices/messagesReducer';
 
 const Chat = (props) => {
 	const {
@@ -9,27 +14,40 @@ const Chat = (props) => {
 		apiTokenInstance
 	} = props;
 
-	const [history, setHistory] = useState([]);
+	const messages = useSelector(fetchMessages);
+
+	// const [history, setHistory] = useState([]);
 
 	const [message, setMessage] = useState();
 
-	const addMessage = (message) => {
-		setHistory([...history, message]);
-	}
+	const inputRef = useRef();
 
-	const getReciveNotification = async () => {
-		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`)
+	const dispatch = useDispatch();
+
+	/* const addMessage = (message) => {
+		setHistory([...history, message]);
+	} */
+
+	const getReciveNotification = () => {
+		const response = fetch(`https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`)
 		.then(response => response.text())
-		.then(result => JSON.parse(result));
-		if (response) {
-			if (response.body.typeWebhook === "outgoingAPIMessageReceived") {
-				addMessage([response.body.messageData.extendedTextMessageData.text, response.body.typeWebhook]);
-			} else {
-				addMessage([response.body.messageData.textMessageData.textMessage, response.body.typeWebhook]);
+		.then(result => JSON.parse(result))
+		.then(data => {
+			if (data) {
+				console.log(data);
+				if (data.body.typeWebhook === "outgoingAPIMessageReceived") {
+					// addMessage([data.body.messageData.extendedTextMessageData.text, data.body.typeWebhook]);
+					dispatch(addMessage([data.body.idMessage, data.body.messageData.extendedTextMessageData.text, data.body.typeWebhook]));
+				} else {
+					// addMessage([data.body.messageData.textMessageData.textMessage, data.body.typeWebhook]);
+					dispatch(addMessage([data.body.idMessage, data.body.messageData.textMessageData.textMessage, data.body.typeWebhook]));
+				}
+				fetch(`https://api.green-api.com/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${data.receiptId}`, {method: 'DELETE'});
 			}
-			await fetch(`https://api.green-api.com/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${response.receiptId}`, {method: 'DELETE'});
-		}
-		console.log(history);
+		});
+
+		
+		
 		/*
 		receiptId - номер для удаления
 		body.messageData.extendedTextMessageData.text - текст сообщения если пришло, ушло через апи
@@ -42,10 +60,10 @@ const Chat = (props) => {
 		setTimeout(() => getReciveNotification(), 5000);
 	}
 
-	const sendMessage = async (e) => {
+	const sendMessage = (e) => {
 		e.preventDefault();
 		if (message) {
-			await fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
+			fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
 			{
 				method: 'POST',
 				body: JSON.stringify(
@@ -56,6 +74,7 @@ const Chat = (props) => {
 				)
 			});
 		}
+		inputRef.current.value = '';
 		getReciveNotification();
 	}
 
@@ -63,11 +82,11 @@ const Chat = (props) => {
 		<>
 			<div className="chat">
 				<div className="messages">
-					{history.map(message => <Message text={message[0]} type={message[1]}/>)}
+					{messages.map(message => <Message key={message[0]} text={message[1]} type={message[2]}/>)}
 				</div>
 				<div className="d-flex justify-content-around inputMessage">
-					<input onInput={(e) => setMessage(e.target.value)} placeholder="введите сообщение"/>
-					<button onClick={sendMessage} className="btn btn-primary">Отправить</button>
+					<input onInput={(e) => setMessage(e.target.value)} ref={inputRef} placeholder="введите сообщение" />
+					<button onClick={sendMessage} className="btn btn-primary" >Отправить</button>
 				</div>
 			</div>
 		</>
