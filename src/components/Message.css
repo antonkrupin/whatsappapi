@@ -4,8 +4,10 @@
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
+	background-color: white;
 }
 
 .outgoing {
   margin-left: 50%;
+	background-color: #d9fdd3;
 }
