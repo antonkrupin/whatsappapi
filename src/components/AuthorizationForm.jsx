@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Message from "./Message";
+import Chat from "./Chat";
+// import Message from "./Message";
 import './AuthorizationForm.css';
 
 const AuthorizationForm = () => {
@@ -9,9 +10,9 @@ const AuthorizationForm = () => {
 	const [isAuthorized, setIsAuthorized] = useState(false);
 	const [isChatting, setIsChatting] = useState(false);
 	const [error, setError] = useState(null);
-	const [history, setHistory] = useState([]);
+	// const [history, setHistory] = useState([]);
 
-	const [message, setMessage] = useState('start');
+	// const [message, setMessage] = useState();
 
 	const authorize = async (e) => {
 		e.preventDefault();
@@ -32,7 +33,7 @@ const AuthorizationForm = () => {
 		}
 	};
 
-	const loadChatHistory = async () => {
+	/* const loadChatHistory = async () => {
 		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/GetChatHistory/${apiTokenInstance}`,
 		{
 			method: 'POST',
@@ -44,26 +45,34 @@ const AuthorizationForm = () => {
 		.then(result => JSON.parse(result).reverse());
 		setHistory(response);
 		setTimeout(() => loadChatHistory(), 5000);
-	}
+	} */
+
+	/* const getReciveNotification = async () => {
+		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`)
+		.then(response => response.text())
+		.then(result => console.log('test test test', result));
+		setTimeout(() => getReciveNotification(), 5000);
+	} */
 
 	const startChat = async (e) => {
 		e.preventDefault();
-		// const test = loadChatHistory();
-		loadChatHistory();
-		const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
-		{
-			method: 'POST',
-			body: JSON.stringify(
-				{
-					"chatId": `${phone}@c.us`,
-					"message": `${message}`,
-				}
-			)
-		}).then(response => response.text())
-		.then(result => console.log(result));
-		const test1 = await fetch('https://api.green-api.com/waInstance1101820395/ReceiveNotification/d456247c2f3d47edba84182e30a245dbb3041460a08d443694').then(response => response.text())
-		.then(result => console.log(result));;
+
+		// loadChatHistory();
 		
+		/* if (message) {
+			await fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
+			{
+				method: 'POST',
+				body: JSON.stringify(
+					{
+						"chatId": `${phone}@c.us`,
+						"message": `${message}`,
+					}
+				)
+			});
+		}
+
+		getReciveNotification(); */
 		setIsChatting(true);
 	};
 
@@ -126,17 +135,7 @@ const AuthorizationForm = () => {
 							</>
 						)}
 						{isChatting && (
-							<>
-								<div className="chat">
-									<div className="messages">
-										{history.map(message => <Message key={message.idMessage} type={message.type} text={message.textMessage}/>)}
-									</div>
-									<div className="d-flex justify-content-around inputMessage">
-										<input onInput={(e) => setMessage(e.target.value)} placeholder="введите сообщение"/>
-										<button onClick={startChat} className="btn btn-primary">Отправить</button>
-									</div>
-								</div>
-							</>
+							<Chat phone={phone} idInstance={idInstance} apiTokenInstance={apiTokenInstance} />
 						)}
 					</>
 				)}
