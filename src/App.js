@@ -1,14 +1,18 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import AuthorizationForm from './components/AuthorizationForm';
+import Chat from './components/Chat';
 import './App.css';
 
 const App = () => {
 	return (
-		<section>
-			<div className="d-flex justify-content-start">
-				<header>Green Api</header>
-			</div>
-			<AuthorizationForm />
-		</section>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<AuthorizationForm />} />
+				<Route path="/chat" element={<Chat />} />
+			</Routes>
+		</BrowserRouter>
 	)
 }
 
