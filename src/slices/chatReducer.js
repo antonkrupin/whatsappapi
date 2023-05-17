@@ -7,7 +7,7 @@ const initialState = {
   error: null,
 	idInstance: null,
 	apiTokenInstance: null,
-	isLoggedIn: false,
+	phone: null,
 }
 
 const chatSlice = createSlice({
@@ -29,9 +29,9 @@ const chatSlice = createSlice({
 		setApiTokenInstance: (state, action) => {
 			state.apiTokenInstance = action.payload;
 		},
-		setIsLoggedIn: (state, action) => {
-			state.isLoggedIn = !state.isLoggedIn;
-		}
+		setPhone: (state, action) => {
+			state.phone = action.payload;
+		},
   }
 });
 
@@ -40,7 +40,7 @@ export const {
 	setChatStart,
 	setIdInstance,
 	setApiTokenInstance,
-	setIsLoggedIn,
+	setPhone,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
