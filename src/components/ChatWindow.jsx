@@ -52,6 +52,7 @@ const ChatWindow = () => {
 
 	useEffect(() => {
 		getReciveNotification();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [messages]);
 
 	const sendMessage = (e) => {
@@ -81,7 +82,7 @@ const ChatWindow = () => {
           <h3>Создан чат с абонентом - {phone}</h3>
         </div>
         <div className="messages" ref={chatWindowRef}>
-          {messages.map(message => <Message key={message[0]} text={message[0]} type={message[1]}/>)}
+          {messages.map(message => <Message key={message[0]} text={message[1]} type={message[2]}/>)}
         </div>
         <div className="d-flex justify-content-around inputMessage">
           <form onSubmit={sendMessage} className="d-flex">

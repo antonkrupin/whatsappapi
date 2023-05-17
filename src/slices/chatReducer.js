@@ -17,7 +17,7 @@ const chatSlice = createSlice({
     addMessage: (state, action) => {
       if (!state.messagesId.includes(action.payload[0])) {
 				state.messagesId.push(action.payload[0]);
-				state.messages = [...state.messages, [action.payload[1], action.payload[2]]];
+				state.messages = [...state.messages, [action.payload[0], action.payload[1], action.payload[2]]];
 			}
     },
 		setChatStart: (state, action) => {

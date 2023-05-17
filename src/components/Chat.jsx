@@ -24,6 +24,7 @@ const Chat = () => {
 		if (!idInstance) {
 			navigate('/');
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
