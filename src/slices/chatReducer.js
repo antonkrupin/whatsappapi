@@ -19,8 +19,6 @@ const chatSlice = createSlice({
 				state.messagesId.push(action.payload[0]);
 				state.messages = [...state.messages, [action.payload[1], action.payload[2]]];
 			}
-      //state.messages.push(action.payload);
-			// state.messages = [...state.messages, action.payload];
     },
 		setChatStart: (state, action) => {
 			state.isChatStarted = !state.isChatStarted;
