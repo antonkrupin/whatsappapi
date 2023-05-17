@@ -1,14 +1,11 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthorizationForm from './components/AuthorizationForm';
 import Chat from './components/Chat';
 
-import { fetchIsLoggedIn } from './slices/selectors';
 import './App.css';
 
 const App = () => {
-	const isLoggedIn = useSelector(fetchIsLoggedIn);
 	return (
 		<BrowserRouter>
 			<Routes>
