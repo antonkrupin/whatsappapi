@@ -1,0 +1,15 @@
+.startChat {
+	width: 50vw;
+}
+
+.startChat input{
+	width: 40%;
+}
+
+.startChat button {
+	width: 20%;
+}
+
+.chat {
+	width: 50vw;
+}
