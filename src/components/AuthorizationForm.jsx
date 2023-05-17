@@ -1,16 +1,24 @@
 import React, { useState } from "react";
-import Chat from "./Chat";
-// import Message from "./Message";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+
+import Header from "./Header";
+import { setIdInstance, setApiTokenInstance } from "../slices/chatReducer";
+import { fetchApiTokenInstance, fetchIdInstance } from "../slices/selectors";
+
 import './AuthorizationForm.css';
 
 const AuthorizationForm = () => {
-	const [idInstance, setIdInstance] = useState(null);
-	const [apiTokenInstance, setApiTokenInstance] = useState(null);
-	const [phone, setPhone] = useState(null);
-	const [isAuthorized, setIsAuthorized] = useState(false);
-	const [isChatting, setIsChatting] = useState(false);
+	const navigate = useNavigate();
+
+	const dispatch = useDispatch();
+
 	const [error, setError] = useState(null);
-	
+
+	const idInstance = useSelector(fetchIdInstance);
+
+	const apiTokenInstance = useSelector(fetchApiTokenInstance);
+
 	const authorize = async (e) => {
 		e.preventDefault();
 		try {
@@ -18,36 +26,24 @@ const AuthorizationForm = () => {
 			.then(response => response.text())
 			.then(result => JSON.parse(result));
 			if (response.stateInstance === "authorized") {
-				setIsAuthorized(true);
+				navigate("/chat");
 				setError(null);
 			}
 		} catch (err) {
-			setIsAuthorized(false);
 				setError('Проверьте введенные данные, либо авторизуйтесь или зарегистрируйтесь в личном кабинете - green-api.com');
 		}
 	};
 
-	const startChat = async (e) => {
-		e.preventDefault();
-
-		setIsChatting(true);
-	};
-
 	return (
-		<div className="d-flex flex-column align-items-center">
-			<div className="d-flex">
-				{!isAuthorized && (
+		<section>
+			<Header />
+			<div className="d-flex flex-column align-items-center">
+				<div className="d-flex">
 					<h3>Введите учетные данные для системы GREEN-API.</h3>
-				)}
-				{isAuthorized && (
-					<h3>Введите номер телефона, чтобы начать общение.</h3>
-				)}
-			</div>
-			<form method="post" className="d-flex flex-column align-items-center">
-				{!isAuthorized && (
-					<>
+				</div>
+				<form method="post" className="d-flex flex-column align-items-center">
 					<input
-						onChange={(e) => setIdInstance(e.target.value)}
+						onChange={(e) => dispatch(setIdInstance(e.target.value))}
 						type="email"
 						className="form-control"
 						id="idInstance"
@@ -55,7 +51,7 @@ const AuthorizationForm = () => {
 						placeholder="Введите idInstance"
 					/>
 					<input
-						onChange={(e) => setApiTokenInstance(e.target.value)}
+						onChange={(e) => dispatch(setApiTokenInstance(e.target.value))}
 						type="password"
 						className="form-control"
 						id="apiTokenInstance"
@@ -68,41 +64,14 @@ const AuthorizationForm = () => {
 					>
 						Войти
 					</button>
-					</>
-				)}
-				{isAuthorized && (
-					<>
-						{!isChatting && (
-							<>
-								<input
-									onChange={(e) => setPhone(e.target.value)}
-									type="text"
-									className="form-control"
-									id="chatPhone"
-									aria-describedby="phone"
-									placeholder="Номер телефона - 79001234567"
-								/>
-								<button
-									onClick={startChat}
-									type="submit"
-									className="btn btn-primary"
-								>
-									Написать
-								</button>
-							</>
-						)}
-						{isChatting && (
-							<Chat phone={phone} idInstance={idInstance} apiTokenInstance={apiTokenInstance} />
-						)}
-					</>
-				)}
-				{error && (
-					<div className="d-flex error">
-						{error}
-					</div>
-				)}
-			</form>
-		</div>
+					{error && (
+						<div className="d-flex error">
+							{error}
+						</div>
+					)}
+				</form>
+			</div>
+		</section>
 	)
 };
 

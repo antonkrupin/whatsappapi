@@ -1,67 +1,57 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import Header from './Header';
 import Message from './Message';
 import {
-	fetchMessages
+	fetchMessages,
+	fetchChartStart,
+	fetchIdInstance,
+	fetchApiTokenInstance,
 } from '../slices/selectors';
-import { addMessage } from '../slices/messagesReducer';
+import { addMessage, setChatStart } from '../slices/chatReducer';
 
-const Chat = (props) => {
-	const {
-		// history,
-		phone,
-		idInstance,
-		apiTokenInstance
-	} = props;
+import './Chat.css';
+
+const Chat = () => {
+	const dispatch = useDispatch();
 
 	const messages = useSelector(fetchMessages);
 
-	// const [history, setHistory] = useState([]);
+	const isChatStart = useSelector(fetchChartStart);
+
+	const idInstance = useSelector(fetchIdInstance);
+
+	const apiTokenInstance = useSelector(fetchApiTokenInstance);
+
+	const [phone, setPhone] = useState(null);
 
 	const [message, setMessage] = useState();
 
 	const inputRef = useRef();
 
-	const dispatch = useDispatch();
-
-	/* const addMessage = (message) => {
-		setHistory([...history, message]);
-	} */
-
 	const getReciveNotification = () => {
-		const response = fetch(`https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`)
+		fetch(`https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`)
 		.then(response => response.text())
 		.then(result => JSON.parse(result))
 		.then(data => {
 			if (data) {
-				console.log(data);
 				if (data.body.typeWebhook === "outgoingAPIMessageReceived") {
-					// addMessage([data.body.messageData.extendedTextMessageData.text, data.body.typeWebhook]);
 					dispatch(addMessage([data.body.idMessage, data.body.messageData.extendedTextMessageData.text, data.body.typeWebhook]));
 				} else {
-					// addMessage([data.body.messageData.textMessageData.textMessage, data.body.typeWebhook]);
 					dispatch(addMessage([data.body.idMessage, data.body.messageData.textMessageData.textMessage, data.body.typeWebhook]));
 				}
 				fetch(`https://api.green-api.com/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${data.receiptId}`, {method: 'DELETE'});
 			}
 		});
-
-		
-		
-		/*
-		receiptId - номер для удаления
-		body.messageData.extendedTextMessageData.text - текст сообщения если пришло, ушло через апи
-		body.messageData.textMessageData.textMessage - если сообщение не через апи.
-		body.typeWebhook - тип сообщения, если отправляешь сам себе через api "outgoingAPIMessageReceived"
-		body.typeWebhook - "incomingMessageReceived" входящие не через api
-		body.typeWebhook - "incomingAPIMessageReveived" входящие через api
-		если отправил не через апи - outgoingMessageReceived
-		*/
-		setTimeout(() => getReciveNotification(), 5000);
+		setTimeout(() => getReciveNotification(), 3000);
 	}
 
+	useEffect(() => {
+		getReciveNotification();
+	}, [messages]);
+
 	const sendMessage = (e) => {
-		e.preventDefault();
 		if (message) {
 			fetch(`https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
 			{
@@ -74,22 +64,51 @@ const Chat = (props) => {
 				)
 			});
 		}
+		
 		inputRef.current.value = '';
-		getReciveNotification();
 	}
 
 	return (
-		<>
-			<div className="chat">
-				<div className="messages">
-					{messages.map(message => <Message key={message[0]} text={message[1]} type={message[2]}/>)}
-				</div>
-				<div className="d-flex justify-content-around inputMessage">
-					<input onInput={(e) => setMessage(e.target.value)} ref={inputRef} placeholder="введите сообщение" />
-					<button onClick={sendMessage} className="btn btn-primary" >Отправить</button>
-				</div>
+		<section>
+			<Header />
+			<div className="d-flex flex-column align-items-center">
+				{!isChatStart && (
+					<>
+						<div className="d-flex">
+							<h3>Введите номер телефона, чтобы начать общение.</h3>
+						</div>
+						<div className="d-flex justify-content-center startChat">
+							<input
+								onChange={(e) => setPhone(e.target.value)}
+								type="text"
+								className="form-control"
+								id="chatPhone"
+								aria-describedby="phone"
+								placeholder="Номер телефона - 79001234567"
+							/>
+							<button
+								onClick={() => dispatch(setChatStart())}
+								type="submit"
+								className="btn btn-primary"
+							>
+								Создать чат
+							</button>
+						</div>
+					</>
+				)}
+				{isChatStart && (
+					<div className="chat">
+						<div className="messages">
+							{messages.map(message => <Message key={message[0]} text={message[0]} type={message[1]}/>)}
+						</div>
+						<div className="d-flex justify-content-around inputMessage">
+							<input onInput={(e) => setMessage(e.target.value)} ref={inputRef} placeholder="введите сообщение" />
+							<button onClick={sendMessage} className="btn btn-primary" >Отправить</button>
+						</div>
+					</div>
+				)}
 			</div>
-		</>
+		</section>
 	)
 };
 
