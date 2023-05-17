@@ -11,5 +11,11 @@
 }
 
 .chat {
-	width: 50vw;
+	width: 40vw;
+}
+
+.chat input {
+	border-radius: 10px;
+	border: none;
+	padding-left: 10px;
 }

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import Header from "./Header";
 import { setIdInstance, setApiTokenInstance } from "../slices/chatReducer";
 import { fetchApiTokenInstance, fetchIdInstance } from "../slices/selectors";
+import routes from "../routes";
 
 import './AuthorizationForm.css';
 
@@ -22,7 +23,7 @@ const AuthorizationForm = () => {
 	const authorize = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await fetch(`https://api.green-api.com/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`)
+			const response = await fetch(routes.authorization(idInstance, apiTokenInstance))
 			.then(response => response.text())
 			.then(result => JSON.parse(result));
 			if (response.stateInstance === "authorized") {
@@ -41,7 +42,7 @@ const AuthorizationForm = () => {
 				<div className="d-flex">
 					<h3>Введите учетные данные для системы GREEN-API.</h3>
 				</div>
-				<form method="post" className="d-flex flex-column align-items-center">
+				<form className="d-flex flex-column align-items-center">
 					<input
 						onChange={(e) => dispatch(setIdInstance(e.target.value))}
 						type="email"
@@ -49,6 +50,7 @@ const AuthorizationForm = () => {
 						id="idInstance"
 						aria-describedby="idInstance"
 						placeholder="Введите idInstance"
+						required="required"
 					/>
 					<input
 						onChange={(e) => dispatch(setApiTokenInstance(e.target.value))}
@@ -56,10 +58,10 @@ const AuthorizationForm = () => {
 						className="form-control"
 						id="apiTokenInstance"
 						placeholder="Введите apiTokenInstance"
+						required
 					/>
 					<button
 						onClick={authorize}
-						type="submit"
 						className="btn btn-primary"
 					>
 						Войти
