@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
@@ -14,11 +14,17 @@ const AuthorizationForm = () => {
 
 	const dispatch = useDispatch();
 
-	const [error, setError] = useState(null);
+	const idInstanceRef = useRef();
 
 	const idInstance = useSelector(fetchIdInstance);
 
 	const apiTokenInstance = useSelector(fetchApiTokenInstance);
+
+	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		idInstanceRef.current.focus();
+	});
 
 	const authorize = async (e) => {
 		e.preventDefault();
@@ -42,26 +48,26 @@ const AuthorizationForm = () => {
 				<div className="d-flex">
 					<h3>Введите учетные данные для системы GREEN-API.</h3>
 				</div>
-				<form className="d-flex flex-column align-items-center">
+				<form onSubmit={authorize} className="d-flex flex-column align-items-center">
 					<input
 						onChange={(e) => dispatch(setIdInstance(e.target.value))}
-						type="email"
+						type="text"
 						className="form-control"
 						id="idInstance"
 						aria-describedby="idInstance"
 						placeholder="Введите idInstance"
-						required="required"
+						required
+						ref={idInstanceRef}
 					/>
 					<input
 						onChange={(e) => dispatch(setApiTokenInstance(e.target.value))}
-						type="password"
+						type="text"
 						className="form-control"
 						id="apiTokenInstance"
 						placeholder="Введите apiTokenInstance"
 						required
 					/>
 					<button
-						onClick={authorize}
 						className="btn btn-primary"
 					>
 						Войти

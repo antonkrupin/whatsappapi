@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 
+import CreateChat from './CreateChat';
 import Header from './Header';
 import Message from './Message';
 import {
@@ -9,8 +10,9 @@ import {
 	fetchChartStart,
 	fetchIdInstance,
 	fetchApiTokenInstance,
+	fetchPhone,
 } from '../slices/selectors';
-import { addMessage, setChatStart } from '../slices/chatReducer';
+import { addMessage } from '../slices/chatReducer';
 import routes from '../routes';
 
 import './Chat.css';
@@ -28,13 +30,13 @@ const Chat = () => {
 
 	const apiTokenInstance = useSelector(fetchApiTokenInstance);
 
-	const [phone, setPhone] = useState(null);
+	const phone = useSelector(fetchPhone);
+
+	const inputMessageRef = useRef();
+
+	const chatWindowRef = useRef();
 
 	const [message, setMessage] = useState();
-
-	const inputRef = useRef();
-
-	const messagesRef = useRef();
 
 	const getReciveNotification = () => {
 		fetch(routes.receiveNotification(idInstance, apiTokenInstance))
@@ -52,10 +54,10 @@ const Chat = () => {
 			}
 		});
 		
-		if (messagesRef.current) {
-			messagesRef.current.scrollTop = messagesRef.current.offsetHeight;
+		if (chatWindowRef.current) {
+			chatWindowRef.current.scrollTop = chatWindowRef.current.offsetHeight;
 		}
-		setTimeout(() => getReciveNotification(), 2000);
+		setTimeout(() => getReciveNotification(), 5000);
 	}
 
 	useEffect(() => {
@@ -82,49 +84,30 @@ const Chat = () => {
 			setMessage('');
 		}
 		
-		inputRef.current.value = '';
+		inputMessageRef.current.value = '';
 	}
 
 	return (
 		<section>
 			<Header />
 			<div className="d-flex flex-column align-items-center">
-				{!isChatStart && (
-					<>
-						<form>
-							<div className="d-flex">
-								<h3>Введите номер телефона, чтобы начать общение.</h3>
-							</div>
-							<div className="d-flex justify-content-center startChat">
-								<input
-									required
-									onChange={(e) => setPhone(e.target.value)}
-									type="text"
-									className="form-control"
-									id="chatPhone"
-									aria-describedby="phone"
-									placeholder="Номер телефона - 79001234567"
-								/>
-								<button
-									onClick={() => dispatch(setChatStart())}
-									type="submit"
-									className="btn btn-primary"
-								>
-									Создать чат
-								</button>
-							</div>
-						</form>
-					</>
-				)}
+				{!isChatStart && <CreateChat />}
 				{isChatStart && (
 					<div className="chat">
-						<div className="messages" ref={messagesRef}>
+						<div className="d-flex justify-content-center">
+							<h3>Создан чат с абонентом - {phone}</h3>
+						</div>
+						<div className="messages" ref={chatWindowRef}>
 							{messages.map(message => <Message key={message[0]} text={message[0]} type={message[1]}/>)}
 						</div>
 						<div className="d-flex justify-content-around inputMessage">
-							<form className="d-flex">
-								<input onInput={(e) => setMessage(e.target.value)} ref={inputRef} placeholder="Введите сообщение" required/>
-								<button onClick={sendMessage} type="submit" className="btn btn-primary" >Отправить</button>
+							<form onSubmit={sendMessage} className="d-flex">
+								<input
+									onInput={(e) => setMessage(e.target.value)}
+									ref={inputMessageRef}
+									placeholder="Введите сообщение"
+									required />
+								<button type="submit" className="btn btn-primary" >Отправить</button>
 							</form>
 						</div>
 					</div>
