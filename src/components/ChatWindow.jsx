@@ -48,9 +48,9 @@ const ChatWindow = () => {
 		});
 		
 		if (chatWindowRef.current) {
-			chatWindowRef.current.scrollTop = chatWindowRef.current.offsetHeight;
+			chatWindowRef.current.scrollTop = chatWindowRef.current.offsetHeight + 100 * messages.length;
 		}
-		setTimeout(() => getReciveNotification(), 2000);
+		setTimeout(() => getReciveNotification(), 8000);
 	};
 
 	useEffect(() => {
