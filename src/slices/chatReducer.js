@@ -32,6 +32,10 @@ const chatSlice = createSlice({
 		setPhone: (state, action) => {
 			state.phone = action.payload;
 		},
+		clearMessages: (state, action) => {
+			state.messagesId = [];
+			state.messages = [];
+		}
   }
 });
 
@@ -41,6 +45,7 @@ export const {
 	setIdInstance,
 	setApiTokenInstance,
 	setPhone,
+	clearMessages,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

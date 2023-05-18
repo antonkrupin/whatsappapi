@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 import Message from './Message';
 import {
@@ -8,11 +9,13 @@ import {
   fetchApiTokenInstance,
   fetchPhone
 } from '../slices/selectors';
-import { addMessage } from '../slices/chatReducer';
+import { addMessage, setChatStart, clearMessages } from '../slices/chatReducer';
 import routes from '../routes';
 
 const ChatWindow = () => {
   const dispatch = useDispatch();
+
+	const navigate = useNavigate();
 
   const inputMessageRef = useRef();
 
@@ -48,7 +51,7 @@ const ChatWindow = () => {
 			chatWindowRef.current.scrollTop = chatWindowRef.current.offsetHeight;
 		}
 		setTimeout(() => getReciveNotification(), 2000);
-	}
+	};
 
 	useEffect(() => {
 		getReciveNotification();
@@ -73,13 +76,22 @@ const ChatWindow = () => {
 		
 		inputMessageRef.current.value = '';
     inputMessageRef.current.focus();
-	}
+	};
+
+	const endChat = () => {
+		dispatch(clearMessages());
+		dispatch(setChatStart());
+		navigate('/chat');
+		// eslint-disable-next-line no-restricted-globals
+		location.reload();
+	};
 
   return (
     <div className="d-flex flex-column align-items-center">
       <div className="chat">
-        <div className="d-flex justify-content-center">
-          <h3>Создан чат с абонентом - {phone}</h3>
+        <div className="d-flex justify-content-around align-items-center">
+          <h3>Чат с абонентом - {phone}</h3>
+					<button onClick={endChat} className="btn btn-danger" >Завершить чат</button>
         </div>
         <div className="messages" ref={chatWindowRef}>
           {messages.map(message => <Message key={message[0]} text={message[1]} type={message[2]}/>)}
