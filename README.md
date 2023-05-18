@@ -1,6 +1,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/d3336351ced3401731e0/maintainability)](https://codeclimate.com/github/antonkrupin/whatsappapi/maintainability)
 # Приложение для отправки сообщений в WhatsApp с персонального компьютера.
-## Для работы использует [https://green-api.com/](green-api)
+## Для работы использует https://green-api.com/
 
 ## Available Scripts
 
