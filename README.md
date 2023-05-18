@@ -2,11 +2,17 @@
 # Приложение для отправки сообщений в WhatsApp с персонального компьютера.
 ## Для работы использует https://green-api.com/
 
-## Available Scripts
+## Для использования проекта локально:
 
-In the project directory, you can run:
+Склонируйне проект к себе на компьютер.
 
-### `npm start`
+### npm install
+
+Для установки проекта локально
+
+### npm start
+
+Запустит проект локально по адресу - http://localhost:3000
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
