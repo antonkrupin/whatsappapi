@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 const apiPath = 'https://api.green-api.com/waInstance';
-const sendMessage = 'SendMessage';
+const sendMessage = 'sendMessage';
 const getStateInstance = 'getStateInstance';
-const checkWhatsapp = 'CheckWhatsapp';
+const checkWhatsapp = 'checkWhatsapp';
 const receiveNotification = 'receiveNotification';
 const deleteNotification = 'deleteNotification';
 
@@ -13,3 +13,5 @@ export default {
 	receiveNotification: (idInstance, apiTokenInstance) => [apiPath + idInstance, receiveNotification, apiTokenInstance].join('/'),
 	deleteNotification: (idInstance, apiTokenInstance, receiptId) => [apiPath + idInstance, deleteNotification, apiTokenInstance, receiptId].join('/'),
 }
+
+//https://api.green-api.com/waInstance{{idInstance}}/sendMessage/{{apiTokenInstance}}

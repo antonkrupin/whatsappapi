@@ -38,6 +38,8 @@ const ChatWindow = () => {
 		.then(data => {
 			if (data) {
 				const { idMessage, typeWebhook } = data.body;
+				console.log(data);
+				console.log(idMessage)
 				if (typeWebhook === "outgoingAPIMessageReceived") {
 					dispatch(addMessage([idMessage, data.body.messageData.extendedTextMessageData.text, typeWebhook]));
 				} else {
@@ -47,9 +49,6 @@ const ChatWindow = () => {
 			}
 		});
 		
-		if (chatWindowRef.current) {
-			chatWindowRef.current.scrollTop = chatWindowRef.current.offsetHeight + 100 * messages.length;
-		}
 		setTimeout(() => getReciveNotification(), 8000);
 	};
 
@@ -61,6 +60,7 @@ const ChatWindow = () => {
 	const sendMessage = (e) => {
 		e.preventDefault();
 		if (message) {
+			console.log(message);
 			fetch(routes.sendMessage(idInstance, apiTokenInstance),
 			{
 				method: 'POST',
