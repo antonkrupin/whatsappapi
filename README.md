@@ -23,6 +23,6 @@
 ![Start chat page](https://github.com/antonkrupin/whatsappapi/raw/master/screenshots/2.jpg)
 
 ### Chat
-![Chat](https://github.com/antonkrupin/whatsappapi/raw/master/screenshots/3.jpg)
+![Chat](https://github.com/antonkrupin/whatsappapi/raw/master/screenshots/2.jpg)
 
 
