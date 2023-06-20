@@ -16,3 +16,6 @@
 
 ## Рабочее приложение можно протестировать по адресу - https://whatsappapi-seven.vercel.app/
 
+### Application start page
+![Liked films filter](https://github.com/antonkrupin/whatsappapi/raw/master/screenshots/1.jpg)
+
